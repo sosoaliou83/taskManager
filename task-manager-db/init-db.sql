@@ -26,9 +26,9 @@ CREATE TABLE tasks (
 
 -- Insert default users
 INSERT INTO users (username, password, role) VALUES
-('admin', 'admin', 'ADMIN'),
-('validator', 'validator', 'VALIDATOR'),
-('john', 'john', 'USER');
+('admin', '$2b$12$Ik7msG9PZobbtm23JmH8k.v/qpjBO3jcT/91ILTexQ4X8F5RcvyR.', 'ADMIN'),
+('validator', '$2b$12$U6tKsYReJYCwcdtv2BFy0uIxVDMXtm1.SilGMwTeO0k8h2EBbhno.', 'VALIDATOR'),
+('john', '$2b$12$3sUjTgr0bOJ/LXL2CpmVseKC8QvoAdnqNs28TtanUOHZJyud39cH6', 'USER');
 
 -- Insert default tasks
 INSERT INTO tasks (title, description, priority, due_date, completed, deleted, created_by, created_date) VALUES

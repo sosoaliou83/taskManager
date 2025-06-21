@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.thales.taskmanager.dto.ApiResponse;
-import com.thales.taskmanager.dto.Task;
+import com.thales.taskmanager.dto.TaskDTO;
 import com.thales.taskmanager.dto.TaskRequest;
 import com.thales.taskmanager.enums.Priority;
 import com.thales.taskmanager.service.TaskService;
@@ -52,8 +52,8 @@ public class TaskController {
      * @return the created task
      */
     @PostMapping("/create")
-    public ResponseEntity<ApiResponse<Task>> createTask(@RequestBody Task task) {
-        Task created = taskService.createTask(task);
+    public ResponseEntity<ApiResponse<TaskDTO>> createTask(@RequestBody TaskDTO task) {
+        TaskDTO created = taskService.createTask(task);
         return ResponseEntity.ok(new ApiResponse<>(HttpStatus.CREATED.value(), TASK_CREATED, created));
     }
 
@@ -65,14 +65,14 @@ public class TaskController {
      * @return a page of filtered tasks
      */
     @GetMapping("/getData")
-    public ResponseEntity<ApiResponse<Page<Task>>> getTasks(
+    public ResponseEntity<ApiResponse<Page<TaskDTO>>> getTasks(
             @RequestParam(required = false) Priority priority,
             @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate dueDate,
             @RequestParam(required = false) String createdBy,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
         Pageable pageable = PageRequest.of(page, size);
-        Page<Task> tasks = taskService.getTasks(priority, dueDate, createdBy, pageable);
+        Page<TaskDTO> tasks = taskService.getTasks(priority, dueDate, createdBy, pageable);
         return ResponseEntity.ok(
                 new ApiResponse<>(HttpStatus.OK.value(), TASKS_RETRIEVED, tasks));
     }
@@ -85,8 +85,8 @@ public class TaskController {
      * @return the updated task
      */
     @PutMapping("/update/{id}")
-    public ResponseEntity<ApiResponse<Task>> updateTask(@PathVariable String id, @RequestBody Task task) {
-        Task updated = taskService.updateTask(id, task);
+    public ResponseEntity<ApiResponse<TaskDTO>> updateTask(@PathVariable String id, @RequestBody TaskDTO task) {
+        TaskDTO updated = taskService.updateTask(id, task);
         return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(), TASK_UPDATED, updated));
     }
 
@@ -97,8 +97,8 @@ public class TaskController {
      * @return the updated task with toggled completion state
      */
     @PatchMapping("/toggle-completion/{id}")
-    public ResponseEntity<ApiResponse<Task>> switchCompletionStatus(@PathVariable String id) {
-        Task task = taskService.switchCompletionStatus(id);
+    public ResponseEntity<ApiResponse<TaskDTO>> switchCompletionStatus(@PathVariable String id) {
+        TaskDTO task = taskService.switchCompletionStatus(id);
         return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(), TASK_COMPLETION_TOGGLED, task));
     }
 
@@ -109,8 +109,8 @@ public class TaskController {
      * @return empty response with status 200
      */
     @PatchMapping("/toggle-delete/{id}")
-    public ResponseEntity<ApiResponse<Task>> switchDeleteStatus(@PathVariable String id) {
-        Task task = taskService.switchDeleteStatus(id);
+    public ResponseEntity<ApiResponse<TaskDTO>> switchDeleteStatus(@PathVariable String id) {
+        TaskDTO task = taskService.switchDeleteStatus(id);
         return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(), TASK_DELETION_TOGGLED, task));
     }
 

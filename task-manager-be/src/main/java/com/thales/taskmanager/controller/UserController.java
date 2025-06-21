@@ -1,6 +1,8 @@
 package com.thales.taskmanager.controller;
 
-import java.util.List;
+import static com.thales.taskmanager.utils.Constants.USERS_RETRIEVED;
+import static com.thales.taskmanager.utils.Constants.USER_CREATED;
+import static com.thales.taskmanager.utils.Constants.USER_DELETED;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -12,23 +14,21 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.thales.taskmanager.dto.ApiResponse;
-import com.thales.taskmanager.dto.User;
-import com.thales.taskmanager.dto.UserRequest;
+import com.thales.taskmanager.dto.UserDTO;
 import com.thales.taskmanager.enums.Role;
 import com.thales.taskmanager.service.UserService;
 
-import static com.thales.taskmanager.utils.Constants.USER_CREATED;
-import static com.thales.taskmanager.utils.Constants.USER_UPDATED;
-import static com.thales.taskmanager.utils.Constants.USER_DELETED;
-import static com.thales.taskmanager.utils.Constants.USERS_RETRIEVED;
-
+/**
+ * REST controller for managing users.
+ * Provides endpoints for creating, reading, updating, deleting
+ * users.
+ */
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
@@ -43,9 +43,9 @@ public class UserController {
      * @return ApiResponse with status and created user or error
      */
     @PostMapping("/create")
-    public ResponseEntity<ApiResponse<User>> createUser(@RequestBody User user) {
+    public ResponseEntity<ApiResponse<UserDTO>> createUser(@RequestBody UserDTO user) {
         try {
-            User created = userService.createUser(user);
+            UserDTO created = userService.createUser(user);
             return ResponseEntity
                     .status(HttpStatus.CREATED)
                     .body(new ApiResponse<>(HttpStatus.CREATED.value(), USER_CREATED, created));
@@ -62,29 +62,14 @@ public class UserController {
      * @return ApiResponse containing user list
      */
     @GetMapping("/getData")
-    public ResponseEntity<ApiResponse<Page<User>>> getAllUsers(
+    public ResponseEntity<ApiResponse<Page<UserDTO>>> getAllUsers(
             @RequestParam(required = false) Role role,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
         Pageable pageable = PageRequest.of(page, size);
-        Page<User> users = userService.getUsers(pageable, role);
+        Page<UserDTO> users = userService.getUsers(pageable, role);
         return ResponseEntity.ok(
                 new ApiResponse<>(HttpStatus.OK.value(), USERS_RETRIEVED, users));
-    }
-
-    /**
-     * Updates a user's role or password.
-     *
-     * @param username    the ID of the user to update
-     * @param updatedUser the updated user data
-     * @return ApiResponse with the updated user
-     */
-    @PutMapping("/update/{username}")
-    public ResponseEntity<ApiResponse<User>> updateUser(
-            @PathVariable String username,
-            @RequestBody User updatedUser) {
-        User user = userService.updateUser(username, updatedUser);
-        return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(), USER_UPDATED, user));
     }
 
     /**

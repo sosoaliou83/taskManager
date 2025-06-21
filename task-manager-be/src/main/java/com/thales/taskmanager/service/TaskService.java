@@ -1,6 +1,6 @@
 package com.thales.taskmanager.service;
 
-import com.thales.taskmanager.dto.Task;
+import com.thales.taskmanager.dto.TaskDTO;
 import com.thales.taskmanager.enums.Priority;
 import com.thales.taskmanager.repository.TaskRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -24,7 +24,7 @@ public class TaskService {
      * @param task the task to create
      * @return the saved Task object
      */
-    public Task createTask(Task task) {
+    public TaskDTO createTask(TaskDTO task) {
         task.setCreatedDate(LocalDateTime.now());
         return taskRepository.save(task);
     }
@@ -38,7 +38,7 @@ public class TaskService {
      * @param pageable pagination and sorting information
      * @return a page of tasks matching the filters
      */
-    public Page<Task> getTasks(Priority priority, LocalDate dueDate, String createdBy, Pageable pageable) {
+    public Page<TaskDTO> getTasks(Priority priority, LocalDate dueDate, String createdBy, Pageable pageable) {
         if (priority != null && dueDate != null) {
             return taskRepository.findByPriorityAndDueDateAndCreatedBy(priority, dueDate, createdBy, pageable);
         } else if (priority != null) {
@@ -57,7 +57,7 @@ public class TaskService {
      * @return the task if found
      * @throws EntityNotFoundException if no task with the given ID exists
      */
-    public Task getTaskById(String id) {
+    public TaskDTO getTaskById(String id) {
         return taskRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Task not found with id: " + id));
     }
@@ -69,8 +69,8 @@ public class TaskService {
      * @param updatedTask the new task data
      * @return the updated Task object
      */
-    public Task updateTask(String id, Task updatedTask) {
-        Task existing = getTaskById(id);
+    public TaskDTO updateTask(String id, TaskDTO updatedTask) {
+        TaskDTO existing = getTaskById(id);
 
         existing.setTitle(updatedTask.getTitle());
         existing.setDescription(updatedTask.getDescription());
@@ -87,8 +87,8 @@ public class TaskService {
      * @param id the task ID
      * @return the updated Task object
      */
-    public Task switchCompletionStatus(String id) {
-        Task task = getTaskById(id);
+    public TaskDTO switchCompletionStatus(String id) {
+        TaskDTO task = getTaskById(id);
         task.setCompleted(!task.isCompleted());
         return taskRepository.save(task);
     }
@@ -107,8 +107,8 @@ public class TaskService {
      *
      * @param id the task ID
      */
-    public Task switchDeleteStatus(String id) {
-        Task task = getTaskById(id);
+    public TaskDTO switchDeleteStatus(String id) {
+        TaskDTO task = getTaskById(id);
         task.setDeleted(!task.isDeleted());
         return taskRepository.save(task);
     }
