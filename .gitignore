@@ -1,0 +1,26 @@
+
+# === GLOBAL ===
+.DS_Store
+*.log
+*.tmp
+*.swp
+*.swo
+
+# === IDEs ===
+.idea/
+.vscode/
+*.iml
+
+# === Java / Spring Boot ===
+target/
+*.class
+*.jar
+*.war
+*.ear
+
+# === Node / Angular ===
+task-manager-ui/node_modules/
+task-manager-ui/.angular/
+task-manager-ui/dist/
+task-manager-ui/.env
+task-manager-ui/.output/
