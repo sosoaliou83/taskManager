@@ -20,15 +20,6 @@ import com.thales.taskmanager.repository.UserRepository;
 @EnableWebSecurity
 public class SecurityConfig {
 
-        // @Bean
-        // public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        // return http
-        // .authorizeHttpRequests(auth -> auth
-        // .anyRequest().permitAll())
-        // .csrf(csrf -> csrf.disable())
-        // .build();
-        // }
-
         @Bean
         public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
                 http
