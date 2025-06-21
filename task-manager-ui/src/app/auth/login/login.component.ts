@@ -32,11 +32,13 @@ export class LoginComponent {
       this.http.post('/api/auth/login', { username, password }, { headers }).subscribe({
         next: (res: any) => {
           console.log('✅ Login successful:', res);
-          this.router.navigate(['/tasks']);
+          localStorage.setItem('username', username);
+          this.errorMessage = ''; // ✅ Clear error if successful
+          this.router.navigate(['/task-list']); // ✅ Redirect to task list page
         },
         error: (err) => {
           console.error('❌ Login failed:', err);
-          this.errorMessage = 'Invalid username or password';
+          this.errorMessage = 'Invalid username or password'; // ✅ Show error
         }
       });
     }

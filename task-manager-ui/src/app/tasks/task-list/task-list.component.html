@@ -1,1 +1,61 @@
-<p>task-list works!</p>
+<div class="task-container">
+    <div class="header">
+        <h2>TASK MANAGER</h2>
+        <div class="user-menu" tabindex="0" (click)="toggleDropdown()" (blur)="hideDropdown()">
+            <span class="username">{{ username }}</span>
+            <div class="dropdown" *ngIf="dropdownOpen">
+                <button (click)="logout()">🚪 Log out</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="tabs">
+        <button [class.active]="currentTab === 'current'" (click)="switchTab('current')">Current Tasks</button>
+        <button [class.active]="currentTab === 'deleted'" (click)="switchTab('deleted')">Deleted Tasks</button>
+    </div>
+
+    <div class="task-header">
+        <button class="new-task-btn" (click)="createTask()">New Task</button>
+    </div>
+
+    <table class="task-table">
+        <thead>
+            <tr>
+                <th (click)="sortBy('title')">Title</th>
+                <th (click)="sortBy('priority')">Priority</th>
+                <th (click)="sortBy('dueDate')">Due Date</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let task of tasks">
+                <td>
+                    <strong>{{ task.title }}</strong>
+                    <div class="description">{{ task.description }}</div>
+                </td>
+                <td>{{ task.priority }}</td>
+                <td>{{ task.dueDate | date:'yyyy-MM-dd' }}</td>
+                <td>
+                    <img [src]="task.completed ? 'assets/checkbox-checked.png' : 'assets/checkbox-unchecked.png'" (click)="toggleCompletion(task)" class="status-icon" />
+                </td>
+                <td>
+                    <button (click)="updateTask(task)">✏️</button>
+                    <button (click)="deleteTask(task)">🗑️</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="pagination">
+        <span>{{ pageStart + 1 }}-{{ pageEnd }} of {{ totalTasks }}</span>
+        <button (click)="previousPage()" [disabled]="pageStart === 0">◀️</button>
+        <button (click)="nextPage()" [disabled]="pageEnd >= totalTasks">▶️</button>
+        <select [(ngModel)]="itemsPerPage" (change)="onItemsPerPageChange()">
+            <option [value]="10">10</option>
+            <option [value]="50">50</option>
+            <option [value]="100">100</option>
+        </select>
+    </div>
+
+</div>
