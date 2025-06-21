@@ -1,0 +1,23 @@
+<div class="auth-container">
+    <div class="card">
+        <h2 class="title">Task Manager</h2>
+        <form [formGroup]="loginForm" (ngSubmit)="onLogin()">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input id="username" formControlName="username" placeholder="Username" type="text" />
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input id="password" formControlName="password" placeholder="Password" type="password" />
+            </div>
+            <button type="submit">Login</button>
+        </form>
+        <p>
+            Don't have an account? <a routerLink="/signup">Sign up</a>
+        </p>
+        <p>
+            <a routerLink="/forgot-password">Forgot password? (Coming soon)</a>
+        </p>
+        <p class="error" *ngIf="errorMessage">{{ errorMessage }}</p>
+    </div>
+</div>

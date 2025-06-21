@@ -1,0 +1,81 @@
+.auth-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background: #f4f7fa;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.card {
+    background: #ffffff;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+    width: 320px;
+}
+
+.title {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    color: #2f5d9f;
+    font-size: 1.8rem;
+    font-weight: bold;
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+label {
+    display: block;
+    margin-bottom: 0.3rem;
+    font-weight: 600;
+    color: #333;
+}
+
+input {
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 0.95rem;
+}
+
+button {
+    width: 100%;
+    padding: 0.6rem;
+    background-color: #2f5d9f;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 0.5rem;
+
+    &:hover {
+        background-color: #244b80;
+    }
+}
+
+p {
+    text-align: center;
+    margin-top: 1rem;
+
+    a {
+        color: #2f5d9f;
+        text-decoration: none;
+        font-weight: 500;
+
+        &:hover {
+            text-decoration: underline;
+        }
+    }
+}
+
+.error {
+    color: red;
+    margin-top: 1rem;
+    font-size: 0.9rem;
+}
