@@ -25,7 +25,7 @@ public class TaskService {
      * @return the saved Task object
      */
     public Task createTask(Task task) {
-        task.setCreatedDate(LocalDate.now());
+        task.setCreatedDate(LocalDateTime.now());
         return taskRepository.save(task);
     }
 
