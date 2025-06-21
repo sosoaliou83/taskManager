@@ -13,9 +13,12 @@ public interface TaskRepository extends JpaRepository<Task, String> {
 
     Page<Task> findAll(Pageable pageable);
 
-    Page<Task> findByPriority(Priority priority, Pageable pageable);
+    Page<Task> findByCreatedBy(String createdBy, Pageable pageable);
 
-    Page<Task> findByDueDate(LocalDate dueDate, Pageable pageable);
+    Page<Task> findByPriorityAndCreatedBy(Priority priority, String createdBy, Pageable pageable);
 
-    Page<Task> findByPriorityAndDueDate(Priority priority, LocalDate dueDate, Pageable pageable);
+    Page<Task> findByDueDateAndCreatedBy(LocalDate dueDate, String createdBy, Pageable pageable);
+
+    Page<Task> findByPriorityAndDueDateAndCreatedBy(Priority priority, LocalDate dueDate, String createdBy,
+            Pageable pageable);
 }

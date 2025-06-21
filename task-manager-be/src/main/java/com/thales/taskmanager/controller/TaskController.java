@@ -68,10 +68,11 @@ public class TaskController {
     public ResponseEntity<ApiResponse<Page<Task>>> getTasks(
             @RequestParam(required = false) Priority priority,
             @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate dueDate,
+            @RequestParam(required = false) String createdBy,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
         Pageable pageable = PageRequest.of(page, size);
-        Page<Task> tasks = taskService.getTasks(priority, dueDate, pageable);
+        Page<Task> tasks = taskService.getTasks(priority, dueDate, createdBy, pageable);
         return ResponseEntity.ok(
                 new ApiResponse<>(HttpStatus.OK.value(), TASKS_RETRIEVED, tasks));
     }

@@ -38,15 +38,15 @@ public class TaskService {
      * @param pageable pagination and sorting information
      * @return a page of tasks matching the filters
      */
-    public Page<Task> getTasks(Priority priority, LocalDate dueDate, Pageable pageable) {
+    public Page<Task> getTasks(Priority priority, LocalDate dueDate, String createdBy, Pageable pageable) {
         if (priority != null && dueDate != null) {
-            return taskRepository.findByPriorityAndDueDate(priority, dueDate, pageable);
+            return taskRepository.findByPriorityAndDueDateAndCreatedBy(priority, dueDate, createdBy, pageable);
         } else if (priority != null) {
-            return taskRepository.findByPriority(priority, pageable);
+            return taskRepository.findByPriorityAndCreatedBy(priority, createdBy, pageable);
         } else if (dueDate != null) {
-            return taskRepository.findByDueDate(dueDate, pageable);
+            return taskRepository.findByDueDateAndCreatedBy(dueDate, createdBy, pageable);
         } else {
-            return taskRepository.findAll(pageable);
+            return taskRepository.findByCreatedBy(createdBy, pageable);
         }
     }
 
@@ -77,10 +77,6 @@ public class TaskService {
         existing.setPriority(updatedTask.getPriority());
         existing.setDueDate(updatedTask.getDueDate());
         existing.setCompleted(updatedTask.isCompleted());
-
-        // Addition from original scope to have more details
-        existing.setUpdatedBy(updatedTask.getUpdatedBy());
-        existing.setLastUpdatedOn(LocalDateTime.now());
 
         return taskRepository.save(existing);
     }

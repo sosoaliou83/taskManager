@@ -51,11 +51,4 @@ public class Task {
     @Column(name = "created_date", nullable = false)
     private LocalDateTime createdDate;
 
-    @Column(name = "updated_by")
-    private String updatedBy;
-
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    @Column(name = "last_updated_on")
-    private LocalDateTime lastUpdatedOn;
-
 }

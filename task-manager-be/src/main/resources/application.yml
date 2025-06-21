@@ -1,9 +1,9 @@
 server:
-  port: 8081
+  port: 8080
 
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/task_manager_db
+    url: jdbc:postgresql://localhost:5432/task_manager_db # for local testing only
     username: postgres
     password: postgres
 
