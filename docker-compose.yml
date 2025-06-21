@@ -1,0 +1,50 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15
+    container_name: taskmanager-db
+    restart: always
+    environment:
+      POSTGRES_DB: task_manager_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - tasknet
+
+  backend:
+    build:
+      context: ./task-manager-be
+    container_name: taskmanager-backend
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/task_manager_db
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+    networks:
+      - tasknet
+
+  frontend:
+    build:
+      context: ./task-manager-ui
+      dockerfile: Dockerfile
+    container_name: taskmanager-frontend
+    ports:
+      - "4200:80"
+    depends_on:
+      - backend
+    networks:
+      - tasknet
+
+volumes:
+  pgdata:
+
+networks:
+  tasknet:
