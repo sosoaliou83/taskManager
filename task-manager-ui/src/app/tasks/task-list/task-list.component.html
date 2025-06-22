@@ -41,7 +41,7 @@
                     <div class="description">{{ task.description }}</div>
                 </td>
                 <td>{{ task.priority }}</td>
-                <td>{{ task.dueDate | date:'yyyy-MM-dd hh:mm:ss' }}</td>
+                <td>{{ task.dueDate | date:'yyyy-MM-dd' }}</td>
                 <td>
                     <img [src]="task.completed ? 'assets/checkbox-checked.png' : 'assets/checkbox-unchecked.png'" (click)="toggleCompletion(task)" class="status-icon" />
                 </td>

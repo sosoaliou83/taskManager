@@ -69,18 +69,18 @@ export class TaskFormComponent implements OnChanges {
 
   onSubmit() {
     if (this.taskForm.invalid) return;
+
     const fv = this.taskForm.value;
-    // Format dueDate to 'yyyy-MM-dd HH:mm:ss'
     const due = new Date(fv.dueDate);
     const yyyy = due.getFullYear();
     const MM = String(due.getMonth() + 1).padStart(2, '0');
     const dd = String(due.getDate()).padStart(2, '0');
-    const hh = String(due.getHours()).padStart(2, '0');
-    const mmStr = String(due.getMinutes()).padStart(2, '0');
-    const ss = String(due.getSeconds()).padStart(2, '0');
-    const formattedDue = `${yyyy}-${MM}-${dd} ${hh}:${mmStr}:${ss}`;
+    const formattedDate = `${yyyy}-${MM}-${dd}`;
 
-    const payload: Partial<Task> = { ...fv, dueDate: formattedDue };
+    const payload: Partial<Task> = {
+      ...fv,
+      dueDate: formattedDate  // only date now
+    };
 
     if (this.task && this.task.id) {
       this.update.emit({ ...payload, id: this.task.id });

@@ -1,6 +1,6 @@
 package com.thales.taskmanager.service;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -27,7 +27,7 @@ public class TaskService {
      * @return the saved Task object
      */
     public TaskDTO createTask(TaskDTO task) {
-        task.setCreatedDate(LocalDateTime.now());
+        task.setCreatedDate(LocalDate.now());
         return taskRepository.save(task);
     }
 

@@ -1,6 +1,6 @@
 package com.thales.taskmanager.dto;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.thales.taskmanager.enums.Priority;
@@ -33,9 +33,9 @@ public class TaskDTO {
     @Column(nullable = false)
     private Priority priority;
 
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     @Column(name = "due_date", nullable = false)
-    private LocalDateTime dueDate;
+    private LocalDate dueDate;
 
     @Column(nullable = false)
     private boolean isCompleted = false;
@@ -46,8 +46,8 @@ public class TaskDTO {
     @Column(name = "created_by", nullable = false)
     private String createdBy;
 
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     @Column(name = "created_date", nullable = false)
-    private LocalDateTime createdDate;
+    private LocalDate createdDate;
 
 }
