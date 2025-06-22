@@ -1,11 +1,8 @@
 package com.thales.taskmanager.service;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.thales.taskmanager.dto.UserDTO;
-import com.thales.taskmanager.enums.Role;
 import com.thales.taskmanager.repository.UserRepository;
 
 import jakarta.persistence.EntityNotFoundException;
@@ -30,21 +27,6 @@ public class UserService {
             throw new IllegalArgumentException("User already exists with username: " + user.getUsername());
         }
         return userRepository.save(user);
-    }
-
-    /**
-     * Retrieves a paginated list of users, optionally filtered by their role.
-     *
-     * @param pageable the pagination parameters (page number, size, sort)
-     * @param role     optional role filter; if null, returns all users
-     * @return a page of users matching the criteria
-     */
-    public Page<UserDTO> getUsers(Pageable pageable, Role role) {
-        if (role != null) {
-            return userRepository.findByRole(role, pageable);
-        } else {
-            return userRepository.findAll(pageable);
-        }
     }
 
     /**
@@ -88,24 +70,4 @@ public class UserService {
         userRepository.deleteById(username);
     }
 
-    // /**
-    // * Loads a user from the database and returns their credentials and roles.
-    // *
-    // * @param username the username to look up
-    // * @return the user's details for authentication
-    // * @throws UsernameNotFoundException if the user doesn't exist
-    // */
-    // @Override
-    // public UserDetails loadUserByUsername(String username) throws
-    // UsernameNotFoundException {
-    // UserDTO user = userRepository.findById(username)
-    // .orElseThrow(() -> new UsernameNotFoundException("User not found: " +
-    // username));
-
-    // return User
-    // .withUsername(user.getUsername())
-    // .password(user.getPassword()) // TODO : encode password
-    // .roles(user.getRole().name())
-    // .build();
-    // }
 }

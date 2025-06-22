@@ -1,13 +1,9 @@
 package com.thales.taskmanager.controller;
 
-import static com.thales.taskmanager.utils.Constants.USERS_RETRIEVED;
 import static com.thales.taskmanager.utils.Constants.USER_CREATED;
 import static com.thales.taskmanager.utils.Constants.USER_DELETED;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -24,6 +20,8 @@ import com.thales.taskmanager.dto.UserDTO;
 import com.thales.taskmanager.enums.Role;
 import com.thales.taskmanager.service.UserService;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * REST controller for managing users.
  * Provides endpoints for creating, reading, updating, deleting
@@ -31,6 +29,7 @@ import com.thales.taskmanager.service.UserService;
  */
 @RestController
 @RequestMapping("/api/users")
+@Slf4j
 public class UserController {
 
     @Autowired
@@ -57,22 +56,6 @@ public class UserController {
     }
 
     /**
-     * Retrieves a list of all users.
-     *
-     * @return ApiResponse containing user list
-     */
-    @GetMapping("/getData")
-    public ResponseEntity<ApiResponse<Page<UserDTO>>> getAllUsers(
-            @RequestParam(required = false) Role role,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        Page<UserDTO> users = userService.getUsers(pageable, role);
-        return ResponseEntity.ok(
-                new ApiResponse<>(HttpStatus.OK.value(), USERS_RETRIEVED, users));
-    }
-
-    /**
      * Deletes a user by their username.
      *
      * @param username the user to delete
@@ -82,5 +65,31 @@ public class UserController {
     public ResponseEntity<ApiResponse<Void>> deleteUser(@PathVariable String username) {
         userService.deleteUser(username);
         return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(), USER_DELETED, null));
+    }
+
+    /**
+     * Returns only the role of the specified user.
+     *
+     * @param username the username to look up
+     */
+    @GetMapping("/role")
+    public ResponseEntity<ApiResponse<Role>> getUserRole(
+            @RequestParam("username") String username) {
+        UserDTO user = userService.getUser(username);
+        if (user == null) {
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body(new ApiResponse<>(
+                            HttpStatus.NOT_FOUND.value(),
+                            "User not found",
+                            null));
+        }
+        // Return only the role
+        Role role = user.getRole();
+        return ResponseEntity.ok(
+                new ApiResponse<>(
+                        HttpStatus.OK.value(),
+                        "User role retrieved",
+                        role));
     }
 }

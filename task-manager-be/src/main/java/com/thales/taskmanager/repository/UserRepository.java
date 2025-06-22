@@ -12,4 +12,7 @@ public interface UserRepository extends JpaRepository<UserDTO, String> {
     Page<UserDTO> findAll(Pageable pageable);
 
     Page<UserDTO> findByRole(Role role, Pageable pageable);
+
+    UserDTO findByUsername(String username);
+
 }
