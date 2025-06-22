@@ -1,1 +1,34 @@
-<p>task-form works!</p>
+<div class="modal-overlay" (click)="close()">
+    <div class="modal" (click)="$event.stopPropagation()">
+        <button type="button" class="close-btn" (click)="close()">✕</button>
+        <h2>{{ task && task.id ? 'Update Task' : 'Create Task' }}</h2>
+        <form [formGroup]="taskForm" (ngSubmit)="onSubmit()">
+            <div class="form-group">
+                <label for="title">Title</label>
+                <input id="title" formControlName="title" type="text" placeholder="Enter title" />
+            </div>
+            <div class="form-group">
+                <label for="description">Description</label>
+                <textarea id="description" formControlName="description" rows="3" placeholder="Enter description"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="priority">Priority</label>
+                <select id="priority" formControlName="priority">
+                    <option value="HIGH">HIGH</option>
+                    <option value="MEDIUM">MEDIUM</option>
+                    <option value="LOW">LOW</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="dueDate">Due Date</label>
+                <input id="dueDate" formControlName="dueDate" type="datetime-local" step="1" />
+            </div>
+            <div class="actions">
+                <button type="button" class="btn btn-secondary" (click)="close()">Cancel</button>
+                <button type="submit" class="btn btn-primary" [disabled]="taskForm.invalid">
+                    {{ task && task.id ? 'Update' : 'Create' }}
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

@@ -1,3 +1,6 @@
+<app-task-form *ngIf="showCreateForm" [task]="selectedTask" (create)="onTaskCreated($event)" (update)="onTaskUpdated($event)" (closed)="closeCreateForm()">
+</app-task-form>
+
 <div class="task-container">
     <div class="header">
         <h2>TASK MANAGER</h2>
@@ -15,7 +18,7 @@
     </div>
 
     <div class="task-header">
-        <button class="new-task-btn" (click)="createTask()">New Task</button>
+        <button class="new-task-btn" (click)="openCreateForm()">New Task</button>
     </div>
 
     <table class="task-table">
@@ -35,12 +38,12 @@
                     <div class="description">{{ task.description }}</div>
                 </td>
                 <td>{{ task.priority }}</td>
-                <td>{{ task.dueDate | date:'yyyy-MM-dd' }}</td>
+                <td>{{ task.dueDate | date:'yyyy-MM-dd hh:mm:ss' }}</td>
                 <td>
                     <img [src]="task.completed ? 'assets/checkbox-checked.png' : 'assets/checkbox-unchecked.png'" (click)="toggleCompletion(task)" class="status-icon" />
                 </td>
                 <td>
-                    <button (click)="updateTask(task)">✏️</button>
+                    <button (click)="openUpdateForm(task)">✏️</button>
                     <button (click)="deleteTask(task)">🗑️</button>
                 </td>
             </tr>
