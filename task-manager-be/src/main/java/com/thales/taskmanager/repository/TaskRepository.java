@@ -11,14 +11,16 @@ import com.thales.taskmanager.enums.Priority;
 
 public interface TaskRepository extends JpaRepository<TaskDTO, String> {
 
-    Page<TaskDTO> findAll(Pageable pageable);
+    Page<TaskDTO> findByCreatedByAndIsDeletedOrderByTitleDesc(String createdBy, boolean isDeleted, Pageable pageable);
 
-    Page<TaskDTO> findByCreatedBy(String createdBy, Pageable pageable);
-
-    Page<TaskDTO> findByPriorityAndCreatedBy(Priority priority, String createdBy, Pageable pageable);
-
-    Page<TaskDTO> findByDueDateAndCreatedBy(LocalDate dueDate, String createdBy, Pageable pageable);
-
-    Page<TaskDTO> findByPriorityAndDueDateAndCreatedBy(Priority priority, LocalDate dueDate, String createdBy,
+    Page<TaskDTO> findByPriorityAndCreatedByAndIsDeletedOrderByTitleDesc(Priority priority, String createdBy,
+            boolean isDeleted,
             Pageable pageable);
+
+    Page<TaskDTO> findByDueDateAndCreatedByAndIsDeletedOrderByTitleDesc(LocalDate dueDate, String createdBy,
+            boolean isDeleted,
+            Pageable pageable);
+
+    Page<TaskDTO> findByPriorityAndDueDateAndCreatedByAndIsDeletedOrderByTitleDesc(Priority priority, LocalDate dueDate,
+            String createdBy, boolean isDeleted, Pageable pageable);
 }

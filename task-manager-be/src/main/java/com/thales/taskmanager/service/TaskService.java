@@ -1,16 +1,18 @@
 package com.thales.taskmanager.service;
 
-import com.thales.taskmanager.dto.TaskDTO;
-import com.thales.taskmanager.enums.Priority;
-import com.thales.taskmanager.repository.TaskRepository;
-import jakarta.persistence.EntityNotFoundException;
-import lombok.RequiredArgsConstructor;
+import java.time.LocalDateTime;
+
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import com.thales.taskmanager.dto.TaskDTO;
+import com.thales.taskmanager.dto.TaskRequest;
+import com.thales.taskmanager.repository.TaskRepository;
+
+import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
@@ -30,23 +32,30 @@ public class TaskService {
     }
 
     /**
-     * Retrieves a paginated list of tasks, optionally filtered by priority and/or
-     * due date.
+     * Retrieves a paginated list of tasks matching the given request.
      *
-     * @param priority the priority to filter by (optional)
-     * @param dueDate  the due date to filter by (optional)
-     * @param pageable pagination and sorting information
-     * @return a page of tasks matching the filters
+     * @param request a TaskRequest containing optional filters (priority, dueDate,
+     *                deleted),
+     *                the creator’s username, and pagination parameters (page, size)
+     * @return a page of Task matching those criteria
      */
-    public Page<TaskDTO> getTasks(Priority priority, LocalDate dueDate, String createdBy, Pageable pageable) {
-        if (priority != null && dueDate != null) {
-            return taskRepository.findByPriorityAndDueDateAndCreatedBy(priority, dueDate, createdBy, pageable);
-        } else if (priority != null) {
-            return taskRepository.findByPriorityAndCreatedBy(priority, createdBy, pageable);
-        } else if (dueDate != null) {
-            return taskRepository.findByDueDateAndCreatedBy(dueDate, createdBy, pageable);
+    public Page<TaskDTO> getTasks(TaskRequest request) {
+        Pageable pageable = PageRequest.of(request.getPage(), request.getSize());
+        if (request.getPriority() != null && request.getDueDate() != null) {
+            return taskRepository.findByPriorityAndDueDateAndCreatedByAndIsDeletedOrderByTitleDesc(
+                    request.getPriority(),
+                    request.getDueDate(),
+                    request.getCreatedBy(), request.isDeleted(), pageable);
+        } else if (request.getPriority() != null) {
+            return taskRepository.findByPriorityAndCreatedByAndIsDeletedOrderByTitleDesc(request.getPriority(),
+                    request.getCreatedBy(), request.isDeleted(), pageable);
+        } else if (request.getDueDate() != null) {
+            return taskRepository.findByDueDateAndCreatedByAndIsDeletedOrderByTitleDesc(request.getDueDate(),
+                    request.getCreatedBy(), request.isDeleted(), pageable);
         } else {
-            return taskRepository.findByCreatedBy(createdBy, pageable);
+            return taskRepository.findByCreatedByAndIsDeletedOrderByTitleDesc(request.getCreatedBy(),
+                    request.isDeleted(),
+                    pageable);
         }
     }
 

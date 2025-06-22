@@ -38,10 +38,10 @@ public class TaskDTO {
     private LocalDateTime dueDate;
 
     @Column(nullable = false)
-    private boolean completed = false;
+    private boolean isCompleted = false;
 
     @Column(nullable = false)
-    private boolean deleted = false;
+    private boolean isDeleted = false;
 
     @Column(name = "created_by", nullable = false)
     private String createdBy;

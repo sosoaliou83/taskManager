@@ -16,8 +16,8 @@ CREATE TABLE tasks (
     description TEXT,
     priority VARCHAR(20) NOT NULL CHECK (priority IN ('LOW', 'MEDIUM', 'HIGH')),
     due_date TIMESTAMP NOT NULL,
-    completed BOOLEAN NOT NULL DEFAULT FALSE,
-    deleted BOOLEAN NOT NULL DEFAULT FALSE,
+    is_completed BOOLEAN NOT NULL DEFAULT FALSE,
+    is_deleted BOOLEAN NOT NULL DEFAULT FALSE,
     created_date TIMESTAMP NOT NULL,
     created_by VARCHAR(50) NOT NULL,
     updated_by VARCHAR(50),
@@ -31,7 +31,7 @@ INSERT INTO users (username, password, role) VALUES
 ('john', '$2b$12$3sUjTgr0bOJ/LXL2CpmVseKC8QvoAdnqNs28TtanUOHZJyud39cH6', 'USER');
 
 -- Insert default tasks
-INSERT INTO tasks (title, description, priority, due_date, completed, deleted, created_by, created_date) VALUES
+INSERT INTO tasks (title, description, priority, due_date, is_completed, is_deleted, created_by, created_date) VALUES
 ('1) Set Up CI/CD', 'Create Angular components for task display', 'HIGH', '2025-06-18 00:00:00', false, false, 'admin', '2025-06-15 10:05:00'),
 ('2) Style UI Components', 'Define PostgreSQL schema and relationships', 'MEDIUM', '2025-06-17 00:00:00', false, false, 'admin', '2025-06-18 09:58:00'),
 ('3) Optimize Queries', 'Add JWT-based security', 'LOW', '2025-06-22 00:00:00', false, false, 'admin', '2025-06-17 16:19:00'),
