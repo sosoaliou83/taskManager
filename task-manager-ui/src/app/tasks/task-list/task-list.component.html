@@ -55,7 +55,7 @@
                     <!-- Show undo & hard-delete in Deleted Tasks -->
                     <ng-container *ngIf="currentTab === 'deleted'">
                         <button (click)="toggleDeletion(task)">↩️</button>
-                        <button (click)="openDeleteConfirmation(task)">💀</button>
+                        <button *ngIf="canHardDelete" (click)="openDeleteConfirmation(task)">💀</button>
                     </ng-container>
                 </td>
             </tr>

@@ -31,6 +31,13 @@ export class TaskListComponent {
   showHardDeleteConfirm = false;
   confirmedTask: Task | null = null;
 
+  /** Role of the current user */
+  userRole = '';
+  /** Whether the user can perform hard delete */
+  get canHardDelete(): boolean {
+    return this.userRole === 'VALIDATOR' || this.userRole === 'ADMIN';
+  }
+
   // === pagination state ===
   currentPage = 0;
   itemsPerPage = 10;
@@ -43,7 +50,25 @@ export class TaskListComponent {
   }
 
   ngOnInit() {
+    this.loadCurrentUserRole();
     this.loadTasks();
+  }
+
+  loadCurrentUserRole(): void {
+    this.http
+      .get<ApiResponse<string>>(
+        '/api/users/role',
+        { params: new HttpParams().set('username', this.username) }
+      )
+      .subscribe({
+        next: res => {
+          this.userRole = res.data;
+        },
+        error: err => {
+          console.error('❌ Failed to load user role', err);
+          this.userRole = 'USER'; // if role is not found.
+        }
+      });
   }
 
   switchTab(tab: 'current' | 'deleted') {
