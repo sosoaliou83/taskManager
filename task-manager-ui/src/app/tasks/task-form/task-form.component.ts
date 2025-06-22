@@ -15,12 +15,22 @@ import {
   ReactiveFormsModule
 } from '@angular/forms';
 import type { Task } from '../../shared/models/task.model';
+import { MatDatepickerModule, MatDatepickerInputEvent } from '@angular/material/datepicker';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatNativeDateModule } from '@angular/material/core';
 
 @Component({
   selector: 'app-task-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
-  templateUrl: './task-form.component.html',
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatDatepickerModule,
+    MatNativeDateModule
+  ], templateUrl: './task-form.component.html',
   styleUrls: ['./task-form.component.scss']
 })
 export class TaskFormComponent implements OnChanges {
@@ -35,6 +45,26 @@ export class TaskFormComponent implements OnChanges {
   @Output() closed = new EventEmitter<void>();
 
   taskForm: FormGroup;
+
+  // TODO Call API to have SG public holiday
+  // Mocks
+  holidays = [
+    new Date(2025, 0, 1),  // Jan 1, 2025
+    new Date(2025, 6, 14), // Jul 14, 2025
+  ];
+
+  /** Disable selection of holidays */
+  dateFilter = (date: Date | null): boolean => {
+    if (!date) return false;
+    return !this.holidays.some(h => h.getTime() === date.setHours(0, 0, 0, 0));
+  }
+
+  /** Add custom class to holiday dates */
+  dateClass = (date: Date): string => {
+    const d = new Date(date);
+    d.setHours(0, 0, 0, 0);
+    return this.holidays.some(h => h.getTime() === d.getTime()) ? 'holiday' : '';
+  }
 
   constructor(private fb: FormBuilder) {
     this.taskForm = this.fb.group({

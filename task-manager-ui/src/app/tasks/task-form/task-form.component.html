@@ -20,8 +20,13 @@
                 </select>
             </div>
             <div class="form-group">
-                <label for="dueDate">Due Date</label>
-                <input id="dueDate" formControlName="dueDate" type="date" />
+                <mat-form-field appearance="outline" hideRequiredMarker>
+                    <mat-label>Due Date</mat-label>
+                    <input matInput formControlName="dueDate" [matDatepicker]="picker" [matDatepickerFilter]="dateFilter" />
+                    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                    <mat-datepicker #picker [dateClass]="dateClass">
+                    </mat-datepicker>
+                </mat-form-field>
             </div>
             <div class="actions">
                 <button type="button" class="btn btn-secondary" (click)="close()">Cancel</button>
