@@ -1,6 +1,9 @@
 <app-task-form *ngIf="showCreateForm" [task]="selectedTask" (create)="onTaskCreated($event)" (update)="onTaskUpdated($event)" (closed)="closeCreateForm()">
 </app-task-form>
 
+<app-hard-delete-confirmation *ngIf="showHardDeleteConfirm" (confirmed)="hardDeleteTask(confirmedTask!)" (cancelled)="closeDeleteConfirmation()">
+</app-hard-delete-confirmation>
+
 <div class="task-container">
     <div class="header">
         <h2>TASK MANAGER</h2>
@@ -13,8 +16,8 @@
     </div>
 
     <div class="tabs">
-        <button [class.active]="currentTab === 'current'" (click)="switchTab('current')">Current Tasks</button>
-        <button [class.active]="currentTab === 'deleted'" (click)="switchTab('deleted')">Deleted Tasks</button>
+        <button [class.active]="!isDeleted" (click)="switchTab('current')">Current Tasks</button>
+        <button [class.active]=" isDeleted" (click)="switchTab('deleted')">Deleted Tasks</button>
     </div>
 
     <div class="task-header">
@@ -43,8 +46,17 @@
                     <img [src]="task.completed ? 'assets/checkbox-checked.png' : 'assets/checkbox-unchecked.png'" (click)="toggleCompletion(task)" class="status-icon" />
                 </td>
                 <td>
-                    <button (click)="openUpdateForm(task)">✏️</button>
-                    <button (click)="deleteTask(task)">🗑️</button>
+                    <!-- Show edit & soft-delete in Current Tasks -->
+                    <ng-container *ngIf="currentTab === 'current'">
+                        <button (click)="openUpdateForm(task)">✏️</button>
+                        <button (click)="toggleDeletion(task)">🗑️</button>
+                    </ng-container>
+
+                    <!-- Show undo & hard-delete in Deleted Tasks -->
+                    <ng-container *ngIf="currentTab === 'deleted'">
+                        <button (click)="toggleDeletion(task)">↩️</button>
+                        <button (click)="openDeleteConfirmation(task)">💀</button>
+                    </ng-container>
                 </td>
             </tr>
         </tbody>

@@ -6,6 +6,8 @@ import { CommonModule } from '@angular/common';
 import { Task } from '../../shared/models/task.model'; // adjust path if needed
 import { ApiResponse } from '../../shared/models/api-response.model';
 import { TaskFormComponent } from '../task-form/task-form.component';
+import { Page } from '../../shared/models/page.model';
+import { HardDeleteConfirmationComponent } from '../hard-delete-confirmation/hard-delete-confirmation.component';
 
 
 @Component({
@@ -13,10 +15,9 @@ import { TaskFormComponent } from '../task-form/task-form.component';
   selector: 'app-task-list',
   templateUrl: './task-list.component.html',
   styleUrls: ['./task-list.component.scss'],
-  imports: [ReactiveFormsModule, RouterModule, CommonModule, FormsModule, TaskFormComponent]
+  imports: [ReactiveFormsModule, RouterModule, CommonModule, FormsModule, TaskFormComponent, HardDeleteConfirmationComponent]
 })
 export class TaskListComponent {
-  private fb = inject(FormBuilder);
   private http = inject(HttpClient);
   private router = inject(Router);
 
@@ -26,6 +27,9 @@ export class TaskListComponent {
   totalTasks = 0;
   showCreateForm = false;
   selectedTask: Partial<Task> | null = null;
+  isDeleted = false;
+  showHardDeleteConfirm = false;
+  confirmedTask: Task | null = null;
 
   // === pagination state ===
   currentPage = 0;
@@ -43,7 +47,9 @@ export class TaskListComponent {
   }
 
   switchTab(tab: 'current' | 'deleted') {
+    this.isDeleted = (tab === 'deleted');
     this.currentTab = tab;
+    this.currentPage = 0;
     this.loadTasks();
   }
 
@@ -86,21 +92,27 @@ export class TaskListComponent {
   }
 
   loadTasks() {
-    const params = new HttpParams()
-      .set('createdBy', this.username)
-      .set('page', (this.pageStart / this.itemsPerPage).toString())
-      .set('size', this.itemsPerPage.toString());
-
-    this.http.get<ApiResponse<any>>(`/api/tasks/getData`, { params }).subscribe({
-      next: (res) => {
-        this.tasks = res.data.content;
-        this.totalTasks = res.data.totalElements;
-      },
-      error: (err) => {
-        console.error('❌ Failed to load tasks', err);
+    // build exactly the  TaskRequest  object via query params
+    const params = new HttpParams({
+      fromObject: {
+        createdBy: this.username,
+        deleted: this.isDeleted,
+        page: this.currentPage.toString(),
+        size: this.itemsPerPage.toString()
       }
     });
+
+    this.http
+      .get<ApiResponse<Page<Task>>>('/api/tasks/getData', { params })
+      .subscribe({
+        next: (res) => {
+          this.tasks = res.data.content;
+          this.totalTasks = res.data.totalElements;
+        },
+        error: (err) => console.error('❌ Failed to load tasks', err)
+      });
   }
+
 
   toggleCompletion(task: Task) {
     this.http.patch(`/api/tasks/toggle-completion/${task.id}`, null).subscribe({
@@ -114,8 +126,8 @@ export class TaskListComponent {
     });
   }
 
-  deleteTask(task: Task) {
-    this.http.patch(`/toggle-delete/${task.id}`, null).subscribe({
+  toggleDeletion(task: Task) { // Soft Delete
+    this.http.patch(`/api/tasks/toggle-delete/${task.id}`, null).subscribe({
       next: () => {
         console.log('🗑️ Task soft-deleted');
         this.loadTasks(); // refresh
@@ -171,6 +183,23 @@ export class TaskListComponent {
 
   hideDropdown() {
     setTimeout(() => this.dropdownOpen = false, 150); // delay to allow click
+  }
+
+  openDeleteConfirmation(task: Task) {
+    this.confirmedTask = task;
+    this.showHardDeleteConfirm = true;
+  }
+
+  closeDeleteConfirmation() {
+    this.showHardDeleteConfirm = false;
+    this.confirmedTask = null;
+  }
+
+  hardDeleteTask(task: Task | null) {
+    if (!task) return;
+    this.showHardDeleteConfirm = false;
+    this.http.delete(`/api/tasks/delete/${task.id}`)
+      .subscribe(() => this.loadTasks());
   }
 
   logout() {
