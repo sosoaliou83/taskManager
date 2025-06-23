@@ -175,10 +175,6 @@ export class TaskListComponent implements OnInit {
     this.loadTasks();
   }
 
-  sortBy(column: string) {
-    // implement if needed
-  }
-
   // ---- User Menu & Logout ----
   dropdownOpen = false;
   toggleDropdown() { this.dropdownOpen = !this.dropdownOpen; }
