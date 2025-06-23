@@ -101,10 +101,13 @@ export class TaskFormComponent implements OnInit, OnChanges {
     return !this.holidays.some(h => h.getTime() === d.getTime());
   };
 
-  dateClass = (date: Date): string => {
-    const d = new Date(date);
-    d.setHours(0, 0, 0, 0);
-    return this.holidays.some(h => h.getTime() === d.getTime()) ? 'holiday' : '';
+  dateClass = (date: Date, view: 'month' | 'year' | 'multi-year'): string => {
+    if (view === 'month') { // apply only to month (day) view
+      const d = new Date(date);
+      d.setHours(0, 0, 0, 0);
+      return this.holidays.some(h => h.getTime() === d.getTime()) ? 'holiday' : '';
+    }
+    return ''; // no holiday highlighting for year and multi-year views
   };
 
   onYearSelected(selected: Date): void {

@@ -3,7 +3,7 @@
 /* Import Inter font */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
-/* Highlight holiday cells in red and keep them disabled in gray */
+/* Highlight holiday cells in red and keep them disabled in red */
 ::ng-deep .mat-calendar-body-cell.holiday .mat-calendar-body-cell-content {
     background-color: #ffe5e5 !important;
     color: #b71c1c !important;
@@ -13,8 +13,6 @@
 ::ng-deep .mat-calendar-body-disabled .mat-calendar-body-cell-content {
     opacity: 0.8;
 }
-
-
 
 .modal-overlay {
     position: fixed;
