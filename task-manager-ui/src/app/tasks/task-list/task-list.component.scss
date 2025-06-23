@@ -264,4 +264,11 @@
             font-size: 0.9rem;
         }
     }
+
+    // Status can not be click if task is already deleted
+    .status-icon.disabled {
+        cursor: default;
+        opacity: 0.5;
+        pointer-events: none;
+    }
 }
