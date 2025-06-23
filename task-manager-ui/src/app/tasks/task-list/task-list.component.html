@@ -17,12 +17,31 @@
 
     <div class="tabs">
         <button [class.active]="!isDeleted" (click)="switchTab('current')">Current Tasks</button>
-        <button [class.active]=" isDeleted" (click)="switchTab('deleted')">Deleted Tasks</button>
+        <button [class.active]="isDeleted" (click)="switchTab('deleted')">Deleted Tasks</button>
     </div>
 
     <div class="task-header">
         <button class="new-task-btn" (click)="openCreateForm()">New Task</button>
     </div>
+
+    <!-- filters row -->
+    <div class="filters mb-4 flex items-end space-x-4">
+        <div class="filter-group">
+            <label for="filter-priority">Priority</label>
+            <select id="filter-priority" [(ngModel)]="filterPriority" (change)="applyFilters()">
+                <option value="">All</option>
+                <option value="LOW">Low</option>
+                <option value="MEDIUM">Medium</option>
+                <option value="HIGH">High</option>
+            </select>
+        </div>
+        <div class="filter-group">
+            <label for="filter-due-date">Due Date</label>
+            <input id="filter-due-date" type="date" [(ngModel)]="filterDueDate" (change)="applyFilters()" />
+        </div>
+        <button class="clear-filters-btn" (click)="clearFilters()">Clear Filters</button>
+    </div>
+    <!-- end filters row -->
 
     <table class="task-table">
         <thead>
@@ -46,13 +65,10 @@
                     <img [src]="task.completed ? 'assets/checkbox-checked.png' : 'assets/checkbox-unchecked.png'" (click)="toggleCompletion(task)" class="status-icon" />
                 </td>
                 <td>
-                    <!-- Show edit & soft-delete in Current Tasks -->
                     <ng-container *ngIf="currentTab === 'current'">
                         <button (click)="openUpdateForm(task)">✏️</button>
                         <button (click)="toggleDeletion(task)">🗑️</button>
                     </ng-container>
-
-                    <!-- Show undo & hard-delete in Deleted Tasks -->
                     <ng-container *ngIf="currentTab === 'deleted'">
                         <button (click)="toggleDeletion(task)">↩️</button>
                         <button *ngIf="canHardDelete" (click)="openDeleteConfirmation(task)">💀</button>
@@ -72,5 +88,4 @@
             <option [value]="100">100</option>
         </select>
     </div>
-
 </div>
