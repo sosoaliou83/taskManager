@@ -3,7 +3,6 @@ package com.thales.taskmanager.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -22,20 +21,11 @@ public class SecurityConfig {
 
         @Bean
         public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-                http
+                return http
                                 .authorizeHttpRequests(auth -> auth
-                                                .requestMatchers(
-                                                                "/api/users/create",
-                                                                "/api/auth/**",
-                                                                "/v3/api-docs/**",
-                                                                "/swagger-ui/**",
-                                                                "/swagger-ui.html")
-                                                .permitAll()
-                                                .anyRequest().authenticated())
+                                                .anyRequest().permitAll())
                                 .csrf(csrf -> csrf.disable())
-                                .httpBasic(Customizer.withDefaults()); // use basic auth
-
-                return http.build();
+                                .build();
         }
 
         @Bean
@@ -43,7 +33,7 @@ public class SecurityConfig {
                 return username -> userRepository.findById(username)
                                 .map(user -> User
                                                 .withUsername(user.getUsername())
-                                                .password(user.getPassword()) // TODO: encode the password!
+                                                .password(user.getPassword())
                                                 .roles(user.getRole().name())
                                                 .build())
                                 .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
