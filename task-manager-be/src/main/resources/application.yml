@@ -15,3 +15,7 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
 
+holidays:
+  api:
+    url: https://date.nager.at/api/v3/PublicHolidays
+
