@@ -3,14 +3,17 @@
         <button type="button" class="close-btn" (click)="close()">✕</button>
         <h2>{{ task && task.id ? 'Update Task' : 'Create Task' }}</h2>
         <form [formGroup]="taskForm" (ngSubmit)="onSubmit()">
+
             <div class="form-group">
                 <label for="title">Title</label>
                 <input id="title" formControlName="title" type="text" placeholder="Enter title" />
             </div>
+
             <div class="form-group">
                 <label for="description">Description</label>
                 <textarea id="description" formControlName="description" rows="3" placeholder="Enter description"></textarea>
             </div>
+
             <div class="form-group">
                 <label for="priority">Priority</label>
                 <select id="priority" formControlName="priority">
@@ -19,21 +22,23 @@
                     <option value="LOW">LOW</option>
                 </select>
             </div>
+
             <div class="form-group">
                 <mat-form-field appearance="outline" hideRequiredMarker>
                     <mat-label>Due Date</mat-label>
                     <input matInput formControlName="dueDate" [matDatepicker]="picker" [matDatepickerFilter]="dateFilter" />
                     <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-                    <mat-datepicker #picker [dateClass]="dateClass">
-                    </mat-datepicker>
+                    <mat-datepicker #picker [dateClass]="dateClass" (yearSelected)="onYearSelected($event)"></mat-datepicker>
                 </mat-form-field>
             </div>
+
             <div class="actions">
                 <button type="button" class="btn btn-secondary" (click)="close()">Cancel</button>
                 <button type="submit" class="btn btn-primary" [disabled]="taskForm.invalid">
                     {{ task && task.id ? 'Update' : 'Create' }}
                 </button>
             </div>
+
         </form>
     </div>
 </div>
