@@ -3,7 +3,8 @@ server:
 
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/task_manager_db # for local testing only
+    #url: jdbc:postgresql://localhost:5432/task_manager_db # for local testing
+    url: jdbc:postgresql://taskmanager-db:5432/task_manager_db # for docker-compose
     username: postgres
     password: postgres
 
