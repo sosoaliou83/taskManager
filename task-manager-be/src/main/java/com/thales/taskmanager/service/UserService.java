@@ -41,33 +41,4 @@ public class UserService {
                 .orElseThrow(() -> new EntityNotFoundException("User not found: " + username));
     }
 
-    /**
-     * Updates the role and/or password of an existing user.
-     * 
-     * @param username    the user's ID
-     * @param updatedUser the new data to apply
-     * @return the updated User object
-     */
-    public UserDTO updateUser(String username, UserDTO updatedUser) {
-        UserDTO existing = getUser(username);
-
-        existing.setPassword(updatedUser.getPassword());
-        existing.setRole(updatedUser.getRole());
-
-        return userRepository.save(existing);
-    }
-
-    /**
-     * Deletes a user by username. Throws an error if user does not exist.
-     *
-     * @param username the user's ID to be deleted
-     * @throws EntityNotFoundException if user does not exist
-     */
-    public void deleteUser(String username) {
-        if (!userRepository.existsById(username)) {
-            throw new EntityNotFoundException("User not found: " + username);
-        }
-        userRepository.deleteById(username);
-    }
-
 }

@@ -22,24 +22,35 @@ public class HolidayService {
     @Autowired
     RestTemplate restTemplate;
 
-    // External API base URL, Nager.Date
     @Value("${holidays.api.url}")
     private String holidaysApiUrl;
 
     /**
-     * Fetches public holidays for the given year and country, returning date and
-     * localName.
+     * Fetches public holidays for the given year and country.
      */
     public List<HolidayDTO> getPublicHolidays(int year, String countryCode) {
         String url = String.format("%s/%d/%s", holidaysApiUrl, year, countryCode);
-        ResponseEntity<HolidayEntry[]> response = restTemplate.getForEntity(url, HolidayEntry[].class);
-        HolidayEntry[] entries = response.getBody();
-        if (entries == null) {
+        log.info("Fetching public holidays from URL: {}", url);
+
+        try {
+            ResponseEntity<HolidayEntry[]> response = restTemplate.getForEntity(url, HolidayEntry[].class);
+            HolidayEntry[] entries = response.getBody();
+
+            if (entries == null) {
+                log.warn("No public holidays found in API response.");
+                return List.of();
+            }
+
+            List<HolidayDTO> holidays = Arrays.stream(entries)
+                    .map(e -> new HolidayDTO(e.getDate(), e.getLocalName()))
+                    .collect(Collectors.toList());
+
+            log.info("Fetched {} public holidays for year {} and country {}", holidays.size(), year, countryCode);
+            return holidays;
+
+        } catch (Exception e) {
+            log.error("Error fetching public holidays from {}: {}", url, e.getMessage(), e);
             return List.of();
         }
-        return Arrays.stream(entries)
-                .map(e -> new HolidayDTO(e.getDate(), e.getLocalName()))
-                .collect(Collectors.toList());
     }
-
 }

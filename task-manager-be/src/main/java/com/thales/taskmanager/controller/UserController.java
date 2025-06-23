@@ -56,18 +56,6 @@ public class UserController {
     }
 
     /**
-     * Deletes a user by their username.
-     *
-     * @param username the user to delete
-     * @return ApiResponse with no data
-     */
-    @DeleteMapping("/delete/{username}")
-    public ResponseEntity<ApiResponse<Void>> deleteUser(@PathVariable String username) {
-        userService.deleteUser(username);
-        return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(), USER_DELETED, null));
-    }
-
-    /**
      * Returns only the role of the specified user.
      *
      * @param username the username to look up

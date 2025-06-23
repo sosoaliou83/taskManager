@@ -13,72 +13,59 @@ import com.thales.taskmanager.repository.TaskRepository;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class TaskService {
 
     private final TaskRepository taskRepository;
 
-    /**
-     * Creates and saves a new task in the database.
-     *
-     * @param task the task to create
-     * @return the saved Task object
-     */
     public TaskDTO createTask(TaskDTO task) {
+        log.info("Creating new task: {}", task.getTitle());
         task.setCreatedDate(LocalDate.now());
-        return taskRepository.save(task);
+        TaskDTO saved = taskRepository.save(task);
+        log.info("Task created with ID: {}", saved.getId());
+        return saved;
     }
 
-    /**
-     * Retrieves a paginated list of tasks matching the given request.
-     *
-     * @param request a TaskRequest containing optional filters (priority, dueDate,
-     *                deleted),
-     *                the creator’s username, and pagination parameters (page, size)
-     * @return a page of Task matching those criteria
-     */
     public Page<TaskDTO> getTasks(TaskRequest request) {
+        log.info("Fetching tasks for user: {} with filters [priority: {}, dueDate: {}, deleted: {}]",
+                request.getCreatedBy(), request.getPriority(), request.getDueDate(), request.isDeleted());
+
         Pageable pageable = PageRequest.of(request.getPage(), request.getSize());
+        Page<TaskDTO> page;
+
         if (request.getPriority() != null && request.getDueDate() != null) {
-            return taskRepository.findByPriorityAndDueDateAndCreatedByAndIsDeletedOrderByTitleDesc(
-                    request.getPriority(),
-                    request.getDueDate(),
-                    request.getCreatedBy(), request.isDeleted(), pageable);
+            page = taskRepository.findByPriorityAndDueDateAndCreatedByAndIsDeletedOrderByTitleDesc(
+                    request.getPriority(), request.getDueDate(), request.getCreatedBy(), request.isDeleted(), pageable);
         } else if (request.getPriority() != null) {
-            return taskRepository.findByPriorityAndCreatedByAndIsDeletedOrderByTitleDesc(request.getPriority(),
-                    request.getCreatedBy(), request.isDeleted(), pageable);
+            page = taskRepository.findByPriorityAndCreatedByAndIsDeletedOrderByTitleDesc(
+                    request.getPriority(), request.getCreatedBy(), request.isDeleted(), pageable);
         } else if (request.getDueDate() != null) {
-            return taskRepository.findByDueDateAndCreatedByAndIsDeletedOrderByTitleDesc(request.getDueDate(),
-                    request.getCreatedBy(), request.isDeleted(), pageable);
+            page = taskRepository.findByDueDateAndCreatedByAndIsDeletedOrderByTitleDesc(
+                    request.getDueDate(), request.getCreatedBy(), request.isDeleted(), pageable);
         } else {
-            return taskRepository.findByCreatedByAndIsDeletedOrderByTitleDesc(request.getCreatedBy(),
-                    request.isDeleted(),
-                    pageable);
+            page = taskRepository.findByCreatedByAndIsDeletedOrderByTitleDesc(
+                    request.getCreatedBy(), request.isDeleted(), pageable);
         }
+
+        log.info("Fetched {} tasks", page.getTotalElements());
+        return page;
     }
 
-    /**
-     * Retrieves a single task by its ID.
-     *
-     * @param id the task ID
-     * @return the task if found
-     * @throws EntityNotFoundException if no task with the given ID exists
-     */
     public TaskDTO getTaskById(String id) {
+        log.info("Fetching task with ID: {}", id);
         return taskRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Task not found with id: " + id));
+                .orElseThrow(() -> {
+                    log.warn("Task not found with ID: {}", id);
+                    return new EntityNotFoundException("Task not found with id: " + id);
+                });
     }
 
-    /**
-     * Updates an existing task with new data.
-     *
-     * @param id          the ID of the task to update
-     * @param updatedTask the new task data
-     * @return the updated Task object
-     */
     public TaskDTO updateTask(String id, TaskDTO updatedTask) {
+        log.info("Updating task with ID: {}", id);
         TaskDTO existing = getTaskById(id);
 
         existing.setTitle(updatedTask.getTitle());
@@ -87,38 +74,31 @@ public class TaskService {
         existing.setDueDate(updatedTask.getDueDate());
         existing.setCompleted(updatedTask.isCompleted());
 
-        return taskRepository.save(existing);
+        TaskDTO saved = taskRepository.save(existing);
+        log.info("Task with ID: {} successfully updated", id);
+        return saved;
     }
 
-    /**
-     * Switch a task to 'Completed' status (true ↔ false).
-     *
-     * @param id the task ID
-     * @return the updated Task object
-     */
     public TaskDTO switchCompletionStatus(String id) {
+        log.info("Toggling completion status for task ID: {}", id);
         TaskDTO task = getTaskById(id);
         task.setCompleted(!task.isCompleted());
-        return taskRepository.save(task);
+        TaskDTO saved = taskRepository.save(task);
+        log.info("Task completion status updated to: {}", saved.isCompleted());
+        return saved;
     }
 
-    /**
-     * Permanently deletes a task by its ID.
-     *
-     * @param id the task ID
-     */
     public void deleteTask(String id) {
+        log.info("Permanently deleting task with ID: {}", id);
         taskRepository.deleteById(id);
     }
 
-    /**
-     * Switch a task to "Deleted" status | soft delete or undo (true ↔ false).
-     *
-     * @param id the task ID
-     */
     public TaskDTO switchDeleteStatus(String id) {
+        log.info("Toggling deleted status for task ID: {}", id);
         TaskDTO task = getTaskById(id);
         task.setDeleted(!task.isDeleted());
-        return taskRepository.save(task);
+        TaskDTO saved = taskRepository.save(task);
+        log.info("Task deleted status is now: {}", saved.isDeleted());
+        return saved;
     }
 }
